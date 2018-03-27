@@ -4,15 +4,18 @@
   "description": "Northcoders News API Sprint",
   "main": "index.js",
   "scripts": {
-    "test": "mocha /spec",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "test": "mocha spec/",
+    "start": "node listen.js",
+    "dev": "nodemon listen.js",
+    "seed:dev": "NODE_ENV=development node seed/seed.js",
+    "seed:test": "NODE_ENV=test node seed/seed.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "faker": "^4.1.0",
     "mongoose": "^5.0.11"
   },
   "devDependencies": {

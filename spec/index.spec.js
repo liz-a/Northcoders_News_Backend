@@ -2,14 +2,17 @@ process.env.NODE_ENV = 'test';
 const app = require('../app');
 const request = require('supertest')(app);
 const {expect} = require('chai');
-const seedDB = require('../seed/test.seed');
-
+const seedDB = require('../seed/seed');
+// const DB = require('../config/test').DB;
+const mongoose = require('mongoose');
 
 describe('/api', () => {
-    let actors, movies, companies;
+    after(() => {mongoose.disconnect()})
     beforeEach(() => {
-        return seedDB().then((data) => {
-            [actorDocs, movieDocs, companyDocs] = data;
-        })
+        return seedDB()
+    })
+    describe('/articles', () => {
+        it('', ()=> {})
+
     })
 });
