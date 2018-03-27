@@ -24,12 +24,7 @@ function generateUserIds(data, docs) {
 }
 
 function seedDB(DB_URL) {
-    mongoose.connect(DB_URL)
-    .then(() => {
-        console.log(`connected to ${DB_URL}`)})
-    .then(() => {
-        mongoose.connection.dropDatabase()
-    })
+    return mongoose.connection.dropDatabase()
     .then(() => {
         console.log('database dropped');
         return Promise.all([Topics.insertMany(topicsData), Users.insertMany(usersData)])
@@ -66,7 +61,7 @@ function seedDB(DB_URL) {
     })
 }
 
-seedDB(DB);
+
 
 module.exports = seedDB;
 
