@@ -7,6 +7,7 @@ const {articlesData, topicsData, usersData} = require(`./${env}Data`);
 const {DB} = require('../config');
 console.log(env);
 let topicIds;
+let userIds;
 
 function seedDB(DB_URL) {
     mongoose.connect(DB_URL)
@@ -17,29 +18,47 @@ function seedDB(DB_URL) {
     })
     .then(() => {
         console.log('database dropped');
-        return Topics.insertMany(topicsData)
+        return Promise.all([Topics.insertMany(topicsData), Users.insertMany(usersData)])
     })
-    .then((topicDocs) => {
+    .then(([topicDocs, userDocs]) => {
         console.log(`inserted ${topicDocs.length} into topics`);
-        topicIds = generateIds(topicsData, topicDocs);
+        console.log(`inserted ${userDocs.length} into users`);
+        topicIds = generateTopicIds(topicsData, topicDocs);
+        userIds = generateUserIds(usersData, userDocs);
+
+
         const newArticleData = articlesData.map(article => {
             article.belongs_to = topicIds[article.topic];
+            article.created_by = userDocs[Math.floor(Math.random() * userDocs.length)]._id
             return article;
         })
-        return Promise.all([topicDocs, Articles.insertMany(newArticleData)])
+        return Promise.all([topicDocs, userDocs, Articles.insertMany(newArticleData)])
     })
-    .then(([topicDocs, articleDocs])=> {
-        console.log(topicDocs);
+    .then(([topicDocs, userDocs, articleDocs])=> {
+        // console.log(topicDocs);
+        // console.log(articleDocs);
+        // console.log(userDocs);
     })
 
-    
 }
 
 seedDB(DB);
 
-function generateIds(data, docs) {
+function generateTopicIds(data, docs) {
     return data.reduce((acc, item, i) => {
         acc[item.title.toLowerCase()] = docs[i]._id;
         return acc;
     },{})
 }
+
+function generateUserIds(data, docs) {
+    return data.reduce((acc, item, i) => {
+        acc[i] = docs[i]._id;
+        return acc;
+    },{})
+}
+
+// function randomiser(array) {
+//     return Math.floor(Math.random() * array.length);
+// }
+
