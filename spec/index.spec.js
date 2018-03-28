@@ -36,24 +36,26 @@ describe('/api', () => {
                     expect(res.body[0].title).to.equal('Mitch');
                 })
         })
-        it('GET /:topic_id/articles returns articles by topic id', ()=> {
+        it('GET /:topic_id/articles returns articles by topic id and includes a comment count', ()=> {
             return request
                 .get(`/api/topics/${topicDocs[0]._id}/articles`)
                 .expect(200)
                 .then(res => {
                     expect(res.body.length).to.equal(2);
                     expect(res.body[0].title).to.equal('Living in the shadow of a great man');
+                    expect(res.body[0]).to.have.all.keys('_id', 'votes', 'title', 'body', 'belongs_to', 'created_by', '__v', 'comment_count');
                 })
         })
     })
     describe('/articles', () => {
-        it('GET / returns all articles', () => {
+        it('GET / returns all articles and includes a comment count', () => {
             return request
                 .get('/api/articles')
                 .expect(200)
                 .then(res => {
                     expect(res.body.length).to.equal(4);
                     expect(res.body[1].title).to.equal('7 inspirational thought leaders from Manchester UK');
+                    expect(res.body[0]).to.have.all.keys('_id', 'votes', 'title', 'body', 'belongs_to', 'created_by', '__v', 'comment_count')
             })
         })
         it('GET /:article_id/comments returns all comments belonging to a specific article', () => {

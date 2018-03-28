@@ -24,7 +24,10 @@ function addCommentByArticle(req, res, next) {
             res.status(201).send({comment: `${newComment.body}`, status:'added to database'})
         })
     })
-    .catch(next);
+    .catch((err)=> {
+        console.log(err.errors.name)
+        err.errors.body.name === "ValidatorError" ? next({status: 400, msg: "Input not valid", err: err}) : next(err);
+    });
 }
 
 function alterCommentVotes(req,res,next){

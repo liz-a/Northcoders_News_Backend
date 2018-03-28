@@ -1,9 +1,7 @@
 const Articles = require('../models/articles');
 const Comments = require('../models/comments');
 
-function getAllArticles(req,res,next) {
-    return Promise.all([Articles.find().lean(), Comments.find()])
-.then(([articles, comments]) => {
+function addCommentCountToArticles(articles, comments) {
     let commentArticleKey = comments.reduce((acc, val) => {
         (acc[val.belongs_to]) ?
             acc[val.belongs_to] = acc[val.belongs_to] + 1 : acc[val.belongs_to] = 1;
@@ -14,6 +12,12 @@ function getAllArticles(req,res,next) {
         article.comment_count = commentArticleKey[article._id]
         return article;
     })
+}
+
+function getAllArticles(req,res,next) {
+    return Promise.all([Articles.find().lean(), Comments.find()])
+.then(([articles, comments]) => {
+    return addCommentCountToArticles(articles, comments);
 })
 .then(articles => {
     res.send(articles);
@@ -22,8 +26,12 @@ function getAllArticles(req,res,next) {
 }
 
 function getArticlesByTopic(req,res,next) {
-    return Articles.find({belongs_to: `${req.params.topic_id}`})
-    .then((articles)=> {
+    return Promise.all([Articles.find({belongs_to: `${req.params.topic_id}`}).lean(), Comments.find()])
+    .then(([articles, comments]) => {
+        if(!articles){next({status: 404, msg: "topic not found"})}
+        return addCommentCountToArticles(articles, comments);
+    })
+    .then(articles => {
         res.send(articles);
     })
     .catch(next);
