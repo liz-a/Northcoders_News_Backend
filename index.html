@@ -7,7 +7,21 @@
     <title>Northcoders News API Docs</title>
 </head>
 <body>
-    <h1></h1>
-    
+    <h1>Northcoders News</h1>
+    <h2>API Endpoints</h2>
+    <h3>GET <span class="red-text">/api/topics</span></h3>
+    <p>Get all the topics</p>
+    <h3>GET <span class="red-text">/api/topics/:topic_id/articles</span></h3>
+    <p>Return all the articles for a certain topic</p>
+    <h3>GET <span class="red-text">/api/articles</span></h3>
+    <p>Return all the articles</p>
+    <h3>GET <span class="red-text">/api/articles/:article_id/comments</span></h3>
+    <p>Get all the comments for a individual article</p>
+    <h3>POST <span class="red-text">/api/articles/:article_id/comments</span></h3>
+    <p>Add a new comment to an article. This route requires a JSON <span class="red-text">body</span> with a <span class="red-text">comment </span>key and value pair e.g<span class="red-text">{"comment": "This is my new comment"}</span></p>
+    <h3>POST <span class="red-text">/api/articles/:article_id/comments</span></h3>
+    <p>Get all the comments for a individual article</p>
+
+
 </body>
 </html>

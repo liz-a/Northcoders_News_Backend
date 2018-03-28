@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 const env = process.env.NODE_ENV;
 const {Users, Articles, Comments, Topics} = require('../models/index');
-const {articlesData, topicsData, usersData} = require(`./${env}Data`);
+const {articlesData, topicsData, usersData} = require(`./${env}-data`);
 const {DB} = require('../config');
 const faker = require('faker');
 let topicIds;
@@ -24,6 +24,7 @@ function generateUserIds(data, docs) {
 }
 
 function seedDB(DB_URL) {
+    console.log(DB_URL)
     return mongoose.connection.dropDatabase()
     .then(() => {
         console.log('database dropped');
@@ -58,6 +59,7 @@ function seedDB(DB_URL) {
     })
     .then(([topicDocs, userDocs, articleDocs, commentDocs]) => {
         console.log(`inserted ${commentDocs.length} into comments`);
+        return [topicDocs, userDocs, articleDocs, commentDocs];
     })
 }
 
