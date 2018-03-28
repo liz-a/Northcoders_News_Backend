@@ -1,4 +1,3 @@
-// if(!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
 const express = require('express');
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
@@ -13,5 +12,17 @@ mongoose.connect(DB)
 app.use(bodyParser.json());
 
 app.use('/api', router);
+
+app.use((err,req,res,next)=> {
+    if(err.status === 404){
+        res.status(404).send({msg: "page not found"})
+    } else {
+        next(err);
+    }
+})
+
+app.use((err,req,res,next)=> {
+    res.status(500).send({msg: "internal sever error: ", err})
+})
 
 module.exports = app;

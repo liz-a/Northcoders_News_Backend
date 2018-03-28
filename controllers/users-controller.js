@@ -5,6 +5,7 @@ function getUserByUsername(req,res,next) {
     .then((userObj)=> {
         res.send(userObj);
     })
+    .catch(next);
 }
 
 module.exports = {getUserByUsername};

@@ -38,7 +38,7 @@ function seedDB(DB_URL) {
 
         const newArticleData = articlesData.map(article => {
             article.belongs_to = topicIds[article.topic];
-            article.created_by = userDocs[Math.floor(Math.random() * userDocs.length)]._id
+            article.created_by = userDocs[Math.ceil(Math.random() * userDocs.length -1)]._id
             return article;
         })
         return Promise.all([topicDocs, userDocs, Articles.insertMany(newArticleData)])

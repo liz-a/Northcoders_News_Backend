@@ -7,6 +7,7 @@ function getCommentsByArticle(req,res,next) {
     .then((comments)=> {
         res.send(comments);
     })
+    .catch(next);
 }
 
 function addCommentByArticle(req, res, next) {
@@ -20,10 +21,10 @@ function addCommentByArticle(req, res, next) {
         })
         return newComment.save()
         .then((newComment) => {
-            console.log(`comment: ${newComment.body} has been added to the database.`)
-            res.status(201).send(newComment)
+            res.status(201).send({comment: `${newComment.body}`, status:'added to database'})
         })
     })
+    .catch(next);
 }
 
 function alterCommentVotes(req,res,next){
@@ -34,19 +35,29 @@ function alterCommentVotes(req,res,next){
         return Comments.update({_id: comment_id},{
             $inc: {votes: votes},
             $set: {_id: comment_id}
-            }, {upsert: true})
-            .then(data => {
+            })
+            .then(() => {
                 return Comments.find({_id: comment_id})
             })
             .then(comment => {
-                res.send(comment)
+                res.status(200).send(comment)
             })
+            .catch(next);
 }
 
 function deleteComment(req,res,next){
     let comment_id = req.params.comment_id;
     return Comments.deleteOne({_id: comment_id})
-        .then(data => res.send(`${comment_id} deleted`))
+        .then(()=> {
+            return Comments.find()
+        })
+        .then((comments) => 
+        res.status(200).send({comment_id:`${comment_id}`, status: 'deleted', comment_count: comments.length, comments: comments}))
+        // .then(() => {
+        //     return Comments.find({_id: comment_id})
+        // })
+        // .then(res => console.log({findRes: res}))
+        .catch(next);
 }
 
 module.exports = {getCommentsByArticle, addCommentByArticle, alterCommentVotes, deleteComment};
