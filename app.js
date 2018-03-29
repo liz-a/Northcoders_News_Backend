@@ -4,9 +4,14 @@ mongoose.Promise = Promise;
 const bodyParser = require('body-parser')
 const app = express();
 const DB = (process.env.NODE_ENV === 'production') ? process.env.DB : require('./config').DB;
-console.log(DB);
+const path = require('path');
+
 const router = require('./routes/api-router');
 //CONNECT TO DB HERE
+
+app.set('view engine', 'ejs')
+app.use(express.static(path.join(__dirname, 'views')));
+
 mongoose.connect(DB)
     .then(() => {`app connected to ${DB}`});
 
