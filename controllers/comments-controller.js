@@ -61,10 +61,7 @@ function alterCommentVotes(req,res,next){
 function deleteComment(req,res,next){
     let comment_id = req.params.comment_id;
 
-    return Comments.find({_id: comment_id})
-        .then((comment)=> {
-            comment.length === 0 ? next({status: 400, msg: "No comment found for this id!", err: err}) : Comments.deleteOne({_id: comment_id});
-        })
+    return Comments.deleteOne({_id: comment_id})
         .then(()=> {
             return Comments.find()
         })
