@@ -42,6 +42,7 @@ function alterVoteCount(req,res,next) {
     let votes;
     (req.query.vote === 'up') ? votes = 1 :
     (req.query.vote === 'down') ? votes = -1 : votes = 0;
+    if(votes === 0) { next({status:400, msg: "Valid formats for vote queries are: '?vote=up' or '?vote=down'"})}
         return Articles.update({_id: article_id},{
             $inc: {votes: votes},
             $set: {_id: article_id}
@@ -50,9 +51,14 @@ function alterVoteCount(req,res,next) {
                 return Articles.find({_id: article_id})
             })
             .then(article => {
+                if(article.length === 0) { next({status: 400, msg: "No article found for this id!"})}
+                else
                 res.status(200).send(article)
             })
-            .catch(next);
+            .catch((err)=> {
+                console.log(err)
+                err.name === "CastError" ? next({status: 400, msg: "No article found for this id!", err: err}) : next(err);
+            });
 }
 
 module.exports = {getAllArticles, getArticlesByTopic, alterVoteCount};

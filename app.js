@@ -7,11 +7,11 @@ const DB = (process.env.NODE_ENV === 'production') ? process.env.DB : require('.
 const path = require('path');
 
 const router = require('./routes/api-router');
-//CONNECT TO DB HERE
 
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'views')));
 
+//CONNECT TO DB HERE
 mongoose.connect(DB)
     .then(() => {`app connected to ${DB}`});
 

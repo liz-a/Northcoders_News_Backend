@@ -2,7 +2,6 @@ const Comments = require('../models/comments');
 const Users = require('../models/users');
 const Articles = require('../models/articles')
 
-
 function getCommentsByArticle(req,res,next) {
     return Promise.all([Comments.find({belongs_to: `${req.params.article_id}`}), Articles.find({_id: `${req.params.article_id}`})])
     .then(([comments, article])=> {
@@ -16,7 +15,6 @@ function getCommentsByArticle(req,res,next) {
 }
 
 function addCommentByArticle(req, res, next) {
-    //errs - trying to add to invalid article_ids
     Users.find()
     .then(data => {
         let userId = data[Math.floor(Math.random() * data.length)]._id;
@@ -26,17 +24,16 @@ function addCommentByArticle(req, res, next) {
             "created_by": userId
         })
         return newComment.save()
-        .then((newComment) => {
-            res.status(201).send({comment: `${newComment.body}`, status:'added to database'})
-        })
+    })
+    .then((newComment) => {
+        res.status(201).send({comment: `${newComment.body}`, status:'added to database'})
     })
     .catch((err)=> {
-        err.errors.body.name === "ValidatorError" ? next({status: 400, msg: "Input not valid", err: err}) : next(err);
+        err.errors.body.name === "ValidatorError" ? next({status: 400, msg: 'Input not valid: accepted format for input is "comment": "body of comment", please check input and be sure to use double quotation marks', err: err}) : next(err);
     });
 }
 
 function alterCommentVotes(req,res,next){
-        //errs - trying to update invalid comment_ids (not all caught by catch)
     let comment_id = req.params.comment_id;
     let votes;
     (req.query.vote === 'up') ? votes = 1 :
@@ -51,6 +48,7 @@ function alterCommentVotes(req,res,next){
                 return Comments.find({_id: comment_id})
             })
             .then(comment => {
+                if(comment.length === 0) { next({status: 400, msg: "No comment found for this id!"})}
                 res.status(200).send(comment)
             })
             .catch((err)=> {
@@ -60,17 +58,15 @@ function alterCommentVotes(req,res,next){
 
 function deleteComment(req,res,next){
     let comment_id = req.params.comment_id;
-
-    return Comments.deleteOne({_id: comment_id})
+        return Comments.find({_id: comment_id})
+        .then((comment) => {
+            return Comments.deleteOne({_id: comment_id})
+        })
         .then(()=> {
             return Comments.find()
         })
         .then((comments) => 
         res.status(200).send({comment_id:`${comment_id}`, status: 'deleted', comment_count: comments.length, comments: comments}))
-        // .then(() => {
-        //     return Comments.find({_id: comment_id})
-        // })
-        // .then(res => console.log({findRes: res}))
         .catch(next);
 }
 
