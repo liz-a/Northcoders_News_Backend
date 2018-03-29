@@ -1,6 +1,6 @@
 const seedDB = require('./seed')
-if(!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
-const {DB} = require('../config');
+process.env.DB = require('../config/production');
+const DB = process.env.DB;
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 

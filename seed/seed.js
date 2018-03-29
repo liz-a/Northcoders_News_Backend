@@ -1,7 +1,8 @@
 if(!process.env.NODE_ENV) process.env.NODE_ENV = 'development';
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
-const env = process.env.NODE_ENV;
+let env = process.env.NODE_ENV;
+if(env === 'production') env = 'development';
 const {Users, Articles, Comments, Topics} = require('../models/index');
 const {articlesData, topicsData, usersData} = require(`./${env}-data`);
 const {DB} = require('../config');

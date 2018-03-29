@@ -4,7 +4,6 @@ mongoose.Promise = Promise;
 const bodyParser = require('body-parser')
 const app = express();
 const DB = process.env.DB || require('./config').DB;
-// const { DB } = process.env || require('./config');
 const router = require('./routes/api-router');
 //CONNECT TO DB HERE
 mongoose.connect(DB)
@@ -26,6 +25,7 @@ app.use((err,req,res,next)=> {
         next(err);
     }
 })
+
 app.use((err,req,res,next)=> {
     if(err.status === 400){
         res.status(400).send({msg: err.msg, err: err.err})
