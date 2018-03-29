@@ -1,5 +1,5 @@
 const seedDB = require('./seed')
-process.env.DB = require('../config/production');
+process.env.DB = require('../config/production').DB;
 const DB = process.env.DB;
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;

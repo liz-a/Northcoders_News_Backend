@@ -5,7 +5,6 @@ let env = process.env.NODE_ENV;
 if(env === 'production') env = 'development';
 const {Users, Articles, Comments, Topics} = require('../models/index');
 const {articlesData, topicsData, usersData} = require(`./${env}-data`);
-const {DB} = require('../config');
 const faker = require('faker');
 let topicIds;
 let userIds;
