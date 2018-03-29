@@ -9,7 +9,7 @@ function addCommentCountToArticles(articles, comments) {
     }, {})
 
     return articles.map(article => {
-        article.comment_count = commentArticleKey[article._id]
+        article.comment_count = commentArticleKey[article._id] || 0;
         return article;
     })
 }

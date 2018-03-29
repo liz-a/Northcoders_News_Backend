@@ -8,7 +8,8 @@
     "start": "node listen.js",
     "dev": "nodemon listen.js",
     "seed:dev": "NODE_ENV=development node seed/seed.dev.js",
-    "seed:test": "NODE_ENV=test node seed/seed.dev.js"
+    "seed:test": "NODE_ENV=test node seed/seed.dev.js",
+    "seed:prod": "NODE_ENV=production node seed/seed.dev.js"
   },
   "author": "",
   "license": "ISC",
