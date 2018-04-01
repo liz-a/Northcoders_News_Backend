@@ -9,4 +9,4 @@ mongoose.connect(DB)
 .then(() => {
     console.log('disconnecting in the seed.js')
     return mongoose.disconnect()})
-    .catch(console.log);
+    .catch((err)=> {next(err)});
