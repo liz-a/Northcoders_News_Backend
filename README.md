@@ -8,6 +8,7 @@ Fork the repo and clone or download.
 
 To run the development server:
 ```
+npm install
 npm run dev
 ```
 In the browser or Postman navigate to: localhost:9090/api, this will serve a set of instructions for navigating to endpoints.
@@ -16,16 +17,6 @@ In the browser or Postman navigate to: localhost:9090/api, this will serve a set
 
 Install Postman to submit post requests:
 https://www.getpostman.com
-
-### Installing
-
-Install node packages: express, mongoose, ejs, body-parser, faker, chai, mocha, nodemon, supertest.
-
-```
-npm i express mongoose ejs body-parser 
-npm i faker chai mocha nodemon supertest -D
-
-```
 
 ## Running the tests
 

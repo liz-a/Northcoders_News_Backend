@@ -3,11 +3,11 @@ const Users = require('../models/users');
 const Articles = require('../models/articles')
 
 function getCommentsByArticle(req,res,next) {
-    return Promise.all([Comments.find({belongs_to: `${req.params.article_id}`}), Articles.find({_id: `${req.params.article_id}`})])
+    return Promise.all([Comments.find({belongs_to: req.params.article_id}), Articles.find({_id: req.params.article_id})])
     .then(([comments, article])=> {
         article.length === 0 ? next({status: 404, msg: `No article found for this id!`}) :
         comments.length === 0 ? next({status: 404, msg: `No comments found for this article!`}): 
-        res.send(comments);
+        res.send({comments});
     })
     .catch((err)=> {
         err.name === "CastError" ? next({status: 400, msg: "No article found for this id!", err: err}) : next(err);
@@ -49,7 +49,7 @@ function alterCommentVotes(req,res,next){
             })
             .then(comment => {
                 if(comment.length === 0) { next({status: 400, msg: "No comment found for this id!"})}
-                res.status(200).send(comment)
+                res.status(200).send({comment})
             })
             .catch((err)=> {
                 err.name === "CastError" ? next({status: 400, msg: "No comment found for this id!", err: err}) : next(err);

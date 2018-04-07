@@ -20,19 +20,19 @@ function getAllArticles(req,res,next) {
     return addCommentCountToArticles(articles, comments);
 })
 .then(articles => {
-    res.send(articles);
+    res.send({articles});
 })
 .catch(next);
 }
 
 function getArticlesByTopic(req,res,next) {
-    return Promise.all([Articles.find({belongs_to: `${req.params.topic_id}`}).lean(), Comments.find()])
+    return Promise.all([Articles.find({belongs_to: req.params.topic_id}).lean(), Comments.find()])
     .then(([articles, comments]) => {
         if(!articles){next({status: 404, msg: "topic not found"})}
         return addCommentCountToArticles(articles, comments);
     })
     .then(articles => {
-        res.send(articles);
+        res.send({articles});
     })
     .catch(next);
 }
@@ -53,7 +53,7 @@ function alterVoteCount(req,res,next) {
             .then(article => {
                 if(article.length === 0) { next({status: 400, msg: "No article found for this id!"})}
                 else
-                res.status(200).send(article)
+                res.status(200).send({article})
             })
             .catch((err)=> {
                 console.log(err)
@@ -61,4 +61,12 @@ function alterVoteCount(req,res,next) {
             });
 }
 
-module.exports = {getAllArticles, getArticlesByTopic, alterVoteCount};
+function getArticlesById(req,res,next) {
+    return Articles.find({_id: req.params.article_id})
+    .then((article)=> {
+        res.send({article})
+    })
+    .catch(next);
+}
+
+module.exports = {getAllArticles, getArticlesByTopic, alterVoteCount, getArticlesById};
