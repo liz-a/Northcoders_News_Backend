@@ -1,5 +1,6 @@
 const Articles = require('../models/articles');
 const Comments = require('../models/comments');
+const Users = require('../models/users');
 
 function addCommentCountToArticles(articles, comments) {
     let commentArticleKey = comments.reduce((acc, val) => {
@@ -69,4 +70,25 @@ function getArticlesById(req,res,next) {
     .catch(next);
 }
 
-module.exports = {getAllArticles, getArticlesByTopic, alterVoteCount, getArticlesById};
+function addArticle(req,res,next) {
+    Users.find()
+    .then(data => {
+        let userId = data[Math.floor(Math.random() * data.length)]._id;
+        const newArticle = new Articles({
+            "title": req.body.title,
+            "body": req.body.article,
+            "belongs_to": req.body.topic_id,
+            "votes": 0,
+            "created_by": userId
+        })
+        return newArticle.save()
+    })
+    .then((newArticle) => {
+        res.status(201).send({article: `${newArticle.title}`, status:'added to database'})
+    })
+    .catch((err)=> {
+        err.errors.body.name === "ValidatorError" ? next({status: 400, msg: 'Input not valid: accepted format for input is "title": "title of article", "article": "body of article", "topic_id": "id number of topic", please check input and be sure to use double quotation marks', err: err}) : next(err);
+    });
+}
+
+module.exports = {getAllArticles, getArticlesByTopic, alterVoteCount, getArticlesById, addArticle};
