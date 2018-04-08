@@ -32,8 +32,8 @@ describe('/api', () => {
                 .get('/api/topics')
                 .expect(200)
                 .then(res => {
-                    expect(res.body.length).to.equal(2);
-                    expect(res.body[0].title).to.equal('Mitch');
+                    expect(res.body.topics.length).to.equal(2);
+                    expect(res.body.topics[0].title).to.equal('Mitch');
                 })
         })
         it('GET /:topic_id/articles returns articles by topic id and includes a comment count', ()=> {
@@ -41,9 +41,9 @@ describe('/api', () => {
                 .get(`/api/topics/${topicDocs[0]._id}/articles`)
                 .expect(200)
                 .then(res => {
-                    expect(res.body.length).to.equal(2);
-                    expect(res.body[0].title).to.equal('Living in the shadow of a great man');
-                    expect(res.body[0]).to.have.all.keys('_id', 'votes', 'title', 'body', 'belongs_to', 'created_by', '__v', 'comment_count');
+                    expect(res.body.articles.length).to.equal(2);
+                    expect(res.body.articles[0].title).to.equal('Living in the shadow of a great man');
+                    expect(res.body.articles[0]).to.have.all.keys('_id', 'votes', 'title', 'body', 'belongs_to', 'created_by', '__v', 'comment_count');
                 })
         })
     })
@@ -53,9 +53,9 @@ describe('/api', () => {
                 .get('/api/articles')
                 .expect(200)
                 .then(res => {
-                    expect(res.body.length).to.equal(4);
-                    expect(res.body[1].title).to.equal('7 inspirational thought leaders from Manchester UK');
-                    expect(res.body[0]).to.have.all.keys('_id', 'votes', 'title', 'body', 'belongs_to', 'created_by', '__v', 'comment_count')
+                    expect(res.body.articles.length).to.equal(4);
+                    expect(res.body.articles[1].title).to.equal('7 inspirational thought leaders from Manchester UK');
+                    expect(res.body.articles[0]).to.have.all.keys('_id', 'votes', 'title', 'body', 'belongs_to', 'created_by', '__v', 'comment_count')
             })
         })
         it('GET /:article_id/comments returns all comments belonging to a specific article', () => {
@@ -63,8 +63,17 @@ describe('/api', () => {
             .get(`/api/articles/${articleDocs[0]._id}/comments`)
             .expect(200)
             .then(res => {
-                expect(res.body.length).to.equal(commentCount);
-                expect(res.body[0].body).to.equal(comment);
+                expect(res.body.comments.length).to.equal(commentCount);
+                expect(res.body.comments[0].body).to.equal(comment);
+            })
+        })
+        it('GET /:article_id returns article by id', () => {
+            return request
+            .get(`/api/articles/${articleDocs[0]._id}`)
+            .expect(200)
+            .then(res => {
+                expect(res.body.article.length).to.equal(1);
+                expect(res.body.article[0].title).to.equal('Living in the shadow of a great man');
             })
         })
         it('POST /:article_id/comments adds a comment to a specific article', () => {
@@ -81,7 +90,7 @@ describe('/api', () => {
                     .get(`/api/articles/${articleDocs[0]._id}/comments`)
                     .expect(200)
                     .then(res => {
-                        expect(res.body.length).to.equal(commentCount + 1)
+                        expect(res.body.comments.length).to.equal(commentCount + 1)
                     })
                 })
         })
@@ -90,7 +99,7 @@ describe('/api', () => {
                 .put(`/api/articles/${articleDocs[0]._id}?vote=up`)
                 .expect(200)
                 .then(res => {
-                    expect(res.body[0].votes).to.equal(1)
+                    expect(res.body.article[0].votes).to.equal(1)
                 })
         })
         it('PUT /:article_id?vote=down decrements the vote count for a specific article by one', () => {
@@ -98,9 +107,17 @@ describe('/api', () => {
             .put(`/api/articles/${articleDocs[0]._id}?vote=down`)
             .expect(200)
             .then(res => {
-                expect(res.body[0].votes).to.equal(-1)
+                expect(res.body.article[0].votes).to.equal(-1)
             })
         })
+        // it('PUT /:article_id?vote=down returns 400 error when passed an id for a non-existent article', () => {
+        //     return request
+        //     .put(`/api/articles/${articleDocs[0]._id}?vote=down`)
+        //     .expect(200)
+        //     .then(res => {
+        //         expect(res.body.article[0].votes).to.equal(-1)
+        //     })
+        // })
     })
     describe('/comments', () => {
         it('PUT /:comment_id?vote=up increments the vote count for a specific comment by one', () => {
@@ -108,7 +125,7 @@ describe('/api', () => {
                 .put(`/api/comments/${commentDocs[0]._id}?vote=up`)
                 .expect(200)
                 .then(res => {
-                    expect(res.body[0].votes).to.equal(1)
+                    expect(res.body.comment[0].votes).to.equal(1)
                 })
         })
         it('PUT /:comment_id?vote=down decrements the vote count for a specific comment by one', () => {
@@ -116,7 +133,7 @@ describe('/api', () => {
             .put(`/api/comments/${commentDocs[0]._id}?vote=down`)
             .expect(200)
             .then(res => {
-                expect(res.body[0].votes).to.equal(-1)
+                expect(res.body.comment[0].votes).to.equal(-1)
             })
         })
         it('DELETE /:comment_id deletes a comment by id', () => {
@@ -135,8 +152,17 @@ describe('/api', () => {
             .get(`/api/users/${userDocs[0].username}`)
             .expect(200)
             .then(res => {
-                expect(res.body.length).to.equal(1);
-                expect(res.body[0].name).to.equal('jonny');
+                expect(res.body.userObj.length).to.equal(1);
+                expect(res.body.userObj[0].name).to.equal('jonny');
+            })
+        })
+        it('GET / returns all the user objects', () => {
+            return request
+            .get(`/api/users`)
+            .expect(200)
+            .then(res => {
+                expect(res.body.users.length).to.equal(2);
+                expect(res.body.users[0].name).to.equal('jonny');
             })
         })
     })

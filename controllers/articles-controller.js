@@ -17,13 +17,13 @@ function addCommentCountToArticles(articles, comments) {
 
 function getAllArticles(req,res,next) {
     return Promise.all([Articles.find().lean(), Comments.find()])
-.then(([articles, comments]) => {
+    .then(([articles, comments]) => {
     return addCommentCountToArticles(articles, comments);
-})
-.then(articles => {
+    })
+    .then(articles => {
     res.send({articles});
-})
-.catch(next);
+    })
+    .catch(next);
 }
 
 function getArticlesByTopic(req,res,next) {
