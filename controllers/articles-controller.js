@@ -18,10 +18,10 @@ function addCommentCountToArticles(articles, comments) {
 function getAllArticles(req,res,next) {
     return Promise.all([Articles.find().lean(), Comments.find()])
     .then(([articles, comments]) => {
-    return addCommentCountToArticles(articles, comments);
+        return addCommentCountToArticles(articles, comments);
     })
     .then(articles => {
-    res.send({articles});
+        res.send({articles});
     })
     .catch(next);
 }
@@ -44,13 +44,10 @@ function alterVoteCount(req,res,next) {
     (req.query.vote === 'up') ? votes = 1 :
     (req.query.vote === 'down') ? votes = -1 : votes = 0;
     if(votes === 0) { next({status:400, msg: "Valid formats for vote queries are: '?vote=up' or '?vote=down'"})}
-        return Articles.update({_id: article_id},{
+        return Articles.findByIdAndUpdate({_id: article_id},{
             $inc: {votes: votes},
             $set: {_id: article_id}
-            })
-            .then(() => {
-                return Articles.find({_id: article_id})
-            })
+            },{new: true})
             .then(article => {
                 if(article.length === 0) { next({status: 400, msg: "No article found for this id!"})}
                 else

@@ -11,6 +11,11 @@ const router = require('./routes/api-router');
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'views')));
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 //CONNECT TO DB HERE
 mongoose.connect(DB)
     .then(() => {`app connected to ${DB}`});

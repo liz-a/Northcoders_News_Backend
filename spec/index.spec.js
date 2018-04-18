@@ -99,7 +99,7 @@ describe('/api', () => {
                 .put(`/api/articles/${articleDocs[0]._id}?vote=up`)
                 .expect(200)
                 .then(res => {
-                    expect(res.body.article[0].votes).to.equal(1)
+                    expect(res.body.article.votes).to.equal(1)
                 })
         })
         it('PUT /:article_id?vote=down decrements the vote count for a specific article by one', () => {
@@ -107,7 +107,8 @@ describe('/api', () => {
             .put(`/api/articles/${articleDocs[0]._id}?vote=down`)
             .expect(200)
             .then(res => {
-                expect(res.body.article[0].votes).to.equal(-1)
+                console.log(res.body.article)
+                expect(res.body.article.votes).to.equal(-1)
             })
         })
         // it('PUT /:article_id?vote=down returns 400 error when passed an id for a non-existent article', () => {
