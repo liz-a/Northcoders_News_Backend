@@ -70,4 +70,13 @@ function deleteComment(req,res,next){
         .catch(next);
 }
 
-module.exports = {getCommentsByArticle, addCommentByArticle, alterCommentVotes, deleteComment};
+function getAllComments(req,res,next) {
+    return Comments.find()
+    .then(comments => {
+        (comments.length === 0) ? next({status: 404, msg: "No comments found!"}) :
+        res.send({comments});
+    })
+    .catch(next);
+}
+
+module.exports = {getCommentsByArticle, addCommentByArticle, alterCommentVotes, deleteComment, getAllComments};

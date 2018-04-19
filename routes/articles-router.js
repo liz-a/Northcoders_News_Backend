@@ -4,8 +4,8 @@ const {getCommentsByArticle, addCommentByArticle} = require('../controllers/comm
 
 router.get('/', getAllArticles);
 router.get('/:article_id/comments', getCommentsByArticle);
-router.get('/:article_id', getArticlesById)
-router.post('/', addArticle)
+router.get('/:article_id', getArticlesById);
+router.post('/', addArticle);
 router.post('/:article_id/comments', addCommentByArticle);
 router.put('/:article_id', alterVoteCount);
 
