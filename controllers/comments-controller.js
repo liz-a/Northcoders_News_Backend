@@ -26,7 +26,7 @@ function addCommentByArticle(req, res, next) {
         return newComment.save()
     })
     .then((newComment) => {
-        res.status(201).send({comment: `${newComment.body}`, status:'added to database', commentData: `${newComment}`})
+        res.status(201).send({comment: `${newComment.body}`, status:'added to database', commentData: newComment})
     })
     .catch((err)=> {
         err.errors.body.name === "ValidatorError" ? next({status: 400, msg: 'Input not valid: accepted format for input is "comment": "body of comment", please check input and be sure to use double quotation marks', err: err}) : next(err);
