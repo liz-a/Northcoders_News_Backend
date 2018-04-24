@@ -143,7 +143,6 @@ describe('/api', () => {
                 .expect(200)
                 .then(res => {
                     expect(res.body.comment_count).to.equal(commentDocs.length - 1);
-                    expect(res.body.comments).to.not.deep.include(commentDocs[0]);
                 }) 
         })
     })

@@ -66,7 +66,7 @@ function deleteComment(req,res,next){
             return Comments.find()
         })
         .then((comments) => 
-        res.status(200).send({comment_id:`${comment_id}`, status: 'deleted', comment_count: comments.length, comments: comments}))
+        res.status(200).send({comment_id:`${comment_id}`, status: 'deleted', comment_count: comments.length}))
         .catch(next);
 }
 
